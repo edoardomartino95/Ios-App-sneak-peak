@@ -13,39 +13,55 @@ struct ContentView: View {
     @State private var opentwo = false
     @State private var openthree = false
     @State private var openfour = false
+    @State private var isDark = false
     
     var body: some View {
-        ScrollView{
-            VStack(alignment: .leading){
-                header
-                myspace
-                blockone
-                blocktwo
-                blockthree
-                blockfour
-                Spacer()
+        NavigationView{
+            ScrollView{
+                VStack(alignment: .leading){
+                    myspace
+                    blockone
+                    blocktwo
+                    blockthree
+                    blockfour
+                    Spacer()
+                }
+                .padding()
             }
-            .padding()
+            .navigationTitle("Benvenuto")
+//            .navigationBarTitleDisplayMode(.inline)
+            .toolbar{
+                ToolbarItem(placement: ToolbarItemPlacement .navigationBarTrailing){
+                    header
+                }
+            }
         }
-       
+        .environment(\.colorScheme, isDark ? .dark: .light)
 }
+    
     var header: some View{
         HStack(alignment: .lastTextBaseline){
-            Text("Benvenuto")
-                .font(.largeTitle)
-                .fontWeight(.bold)
             Spacer()
             
             Button(action: {
                 isOpen.toggle()
             },label:{
+                isDark ? VStack{
+                    Image(systemName: "plus")
+                        .font(.title3)
+                        .foregroundColor(.white)
+                }:
                 VStack{
-                    Image(systemName: "line.horizontal.3")
-                        .font(.largeTitle)
+                    Image(systemName: "plus")
+                        .font(.title3)
+                    
+                        .foregroundColor(.black)
                 }
+                
             })
         }
         .sheet(isPresented: $isOpen){
+            
             VStack(alignment: .leading){
                 HStack{
                     Button(action: {
@@ -94,6 +110,32 @@ struct ContentView: View {
                     })
                 }
                 .padding(.top, 30)
+                
+                HStack{
+                    Button(action: {
+                        isDark.toggle()
+                    },label:{
+                        
+                        isDark ? HStack{
+                            Image(systemName: "sun.max.circle.fill")
+                                .foregroundColor(.gray)
+                                .imageScale(.large)
+                            Text("Light Mode")
+                                .foregroundColor(.gray)
+                                .font(.headline)
+                        }:
+                        HStack{
+                            Image(systemName: "moon.stars.fill")
+                                .foregroundColor(.gray)
+                                .imageScale(.large)
+                            Text("Dark Mode")
+                                .foregroundColor(.gray)
+                                .font(.headline)
+                        }
+                        
+                    })
+                }
+                .padding(.top, 30)
                 Spacer()
             }
             .padding()
@@ -118,6 +160,7 @@ struct ContentView: View {
             HStack(alignment: .lastTextBaseline){
                 Button(action: {
                     openone.toggle()
+                    
                 },label:{
                     VStack{
                         Text("PLASTICA E ALLUMINIO")
@@ -127,8 +170,27 @@ struct ContentView: View {
                 Spacer()
             }
             .sheet(isPresented: $openone){
-                Text("Prova")
+                NavigationView{
+                    VStack(alignment: .leading){
+                        Button(action: {
+                            openone.toggle()
+                        }, label:{
+                            VStack{
+                                Text("Chiudi")
+                                    .fontWeight(.bold)
+                            }
+                        })
+                }
+                    .padding(20)
+                    .foregroundColor(.white)
+                    .background{
+                        RoundedRectangle(cornerRadius: 8)
+                            .foregroundStyle(.blue)
+                    }
+                    
             }
+                    
+        }
             .padding(20)
             .foregroundStyle(.white)
             .background{
@@ -211,12 +273,15 @@ struct ContentView: View {
             }
         
     }
-
+    
+    
         
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+.previewInterfaceOrientation(.portrait)
     }
 }
